@@ -48,6 +48,20 @@ module Firebase
           get_user_by(uid: uid)
         end
 
+        # Updates a user account with the specified properties.
+        #
+        # @param [String, nil] uid The id to assign to the newly created user.
+        # @param [String, nil] display_name The user’s display name.
+        # @param [String, nil] email The user’s primary email.
+        # @param [Boolean, nil] email_verified A boolean indicating whether or not the user’s primary email is verified.
+        # @param [String, nil] phone_number The user’s primary phone number.
+        # @param [String, nil] photo_url The user’s photo URL.
+        # @param [String, nil] password The user’s raw, unhashed password.
+        # @param [Boolean, nil] disabled A boolean indicating whether or not the user account is disabled.
+        #
+        # @raise [CreateUserError] if a user cannot be created.
+        #
+        # @return [UserRecord]
         def update_user(uid: nil, display_name: nil, email: nil, email_verified: nil, phone_number: nil, photo_url: nil, password: nil, disabled: nil)
           payload = {
             localId: validate_uid(uid),
@@ -61,7 +75,7 @@ module Firebase
           }.compact
           res = @client.post(with_path("accounts:update"), payload).body
           uid = res&.fetch("localId")
-          raise CreateUserError, "failed to create user #{res}" if uid.nil?
+          raise UpdateUserError, "failed to create user #{res}" if uid.nil?
           get_user_by(uid: uid)
         end
 
